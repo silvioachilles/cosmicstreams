@@ -1,6 +1,6 @@
-from cosmicstreams.cosmicstreams.sockets.DP import DPSocketPub
-from cosmicstreams.cosmicstreams.sockets.ScanBegin import ScanBeginSocketPub
-from cosmicstreams.cosmicstreams.sockets.ScanEnd import ScanEndSocketPub
+from cosmicstreams.sockets.DP import DPSocketPub
+from cosmicstreams.sockets.ScanBegin import ScanBeginSocketPub
+from cosmicstreams.sockets.ScanEnd import ScanEndSocketPub
 
 
 class PreprocessorStream:
