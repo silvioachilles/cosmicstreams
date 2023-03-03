@@ -1,9 +1,9 @@
 import zmq
 
-from cosmicstreams.sockets.DP import DPSocketSub
-from cosmicstreams.sockets.ScanBegin import ScanBeginSocketSub
-from cosmicstreams.sockets.ScanEnd import ScanEndSocketSub
-from cosmicstreams.sockets.Reco import RecoSocketPub
+from cosmicstreams.cosmicstreams.sockets.DP import DPSocketSub
+from cosmicstreams.cosmicstreams.sockets.ScanBegin import ScanBeginSocketSub
+from cosmicstreams.cosmicstreams.sockets.ScanEnd import ScanEndSocketSub
+from cosmicstreams.cosmicstreams.sockets.Reco import RecoSocketPub
 
 
 class PtychocamStream:
