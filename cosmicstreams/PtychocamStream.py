@@ -57,10 +57,14 @@ class PtychocamStream:
         self.poller.register(self.socket_dp.sub_socket, zmq.POLLIN)
         self.poller.register(self.socket_scan_end.sub_socket, zmq.POLLIN)
 
-        self.poll_time_ms = 1
+        self.poll_time_ms = 0
+
+    def poll(self):
+        return dict(self.poller.poll(self.poll_time_ms))
 
     def has_scan_started(self):
-        if self.socket_scan_begin.sub_socket in dict(self.poller.poll(self.poll_time_ms)):
+        sockets = self.poll()
+        if self.socket_scan_begin.sub_socket in sockets:
             return True
         else:
             return False
@@ -69,7 +73,8 @@ class PtychocamStream:
         return self.socket_scan_begin.recv_metadata()
 
     def has_scan_finished(self):
-        if self.socket_scan_end.sub_socket in dict(self.poller.poll(self.poll_time_ms)):
+        sockets = self.poll()
+        if self.socket_scan_end.sub_socket in sockets:
             return True
         else:
             return False
@@ -78,7 +83,8 @@ class PtychocamStream:
         return self.socket_scan_end.recv_metadata()
 
     def has_dp_arrived(self):
-        if self.socket_dp.sub_socket in dict(self.poller.poll(self.poll_time_ms)):
+        sockets = self.poll()
+        if self.socket_dp.sub_socket in sockets:
             return True
         else:
             return False
@@ -89,3 +95,7 @@ class PtychocamStream:
     def send_reco(self, reco):
         if self.use_out:
             self.socket_reco.send_reco(reco)
+
+    def something_in_queue(self):
+        sockets = self.poll()
+        return len(sockets) > 0
