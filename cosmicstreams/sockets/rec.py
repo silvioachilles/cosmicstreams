@@ -2,15 +2,24 @@ import numpy as np
 import json
 import zmq
 
-
-RECO_PORT = 7017
-RECO_TOPIC = b'r'
+from cosmicstreams.utils import utils
 
 
-class RecoSocketPub:
-    def __init__(self, pub_port=None, pub_topic=None):
-        self.context = zmq.Context()
+RECO_PORT = 37016
+RECO_TOPIC = b'rec'
 
+
+KEY_SHAPE_Y = 'shape_y'
+KEY_SHAPE_X = 'shape_x'
+KEY_DTYPE = 'dtype'
+KEY_BYTEORDER = 'byteorder'
+KEY_ORDER = 'order'
+KEY_OBJ_PIXELSIZE_Y = 'obj_pixelsize_y'
+KEY_OBJ_PIXELSIZE_X = 'obj_pixelsize_x'
+
+
+class RecSocketPub:
+    def __init__(self, pub_port=None, pub_topic=None, socket=None):
         self.pub_port = pub_port
         if self.pub_port is None:
             self.pub_port = RECO_PORT
@@ -19,14 +28,18 @@ class RecoSocketPub:
         if self.pub_topic is None:
             self.pub_topic = RECO_TOPIC
 
-        self.pub_socket = self.context.socket(zmq.PUB)
-        self.pub_socket.bind("tcp://*:{}".format(self.pub_port))
+        if socket is None:
+            self.context = zmq.Context()
+            self.pub_socket = self.context.socket(zmq.PUB)
+            self.pub_socket.bind("tcp://*:{}".format(self.pub_port))
+        else:
+            self.pub_socket = socket
 
-    def send_reco(self, reco):
-        metadata = {
-            'shape': reco.shape,
-            'dtype': reco.dtype.name
-        }
+    def send_reco(self, reco, pixelsize_y=0.0, pixelsize_x=0.0):
+        metadata = utils.get_array_metadata(reco)
+        metadata[KEY_OBJ_PIXELSIZE_Y] = pixelsize_y
+        metadata[KEY_OBJ_PIXELSIZE_X] = pixelsize_x
+
         metadata_zmq = json.dumps(metadata).encode()
 
         self.pub_socket.send_multipart([
@@ -36,7 +49,7 @@ class RecoSocketPub:
         ])
 
 
-class RecoSocketSub:
+class RecSocketSub:
     def __init__(self, host, sub_port=None, sub_topic=None):
         self.context = zmq.Context()
 

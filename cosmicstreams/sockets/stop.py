@@ -2,24 +2,26 @@ import zmq
 import json
 
 
-SCAN_BEGIN_TOPIC = b'b'
-SCAN_BEGIN_PORT = 7014
+SCAN_END_TOPIC = b'stop'
+SCAN_END_PORT = 37013
 
 
-class ScanBeginSocketPub:
-    def __init__(self, pub_port=None, pub_topic=None):
-        self.context = zmq.Context()
-
+class StopSocketPub:
+    def __init__(self, pub_port=None, pub_topic=None, socket=None):
         self.pub_port = pub_port
         if self.pub_port is None:
-            self.pub_port = SCAN_BEGIN_PORT
+            self.pub_port = SCAN_END_PORT
 
         self.pub_topic = pub_topic
         if self.pub_topic is None:
-            self.pub_topic = SCAN_BEGIN_TOPIC
+            self.pub_topic = SCAN_END_TOPIC
 
-        self.pub_socket = self.context.socket(zmq.PUB)
-        self.pub_socket.bind(f"tcp://*:{self.pub_port}")
+        if socket is None:
+            self.context = zmq.Context()
+            self.pub_socket = self.context.socket(zmq.PUB)
+            self.pub_socket.bind(f"tcp://*:{self.pub_port}")
+        else:
+            self.pub_socket = socket
 
     def send_metadata(self, metadata):
         metadata_zmq = json.dumps(metadata).encode()
@@ -30,18 +32,18 @@ class ScanBeginSocketPub:
         ])
 
 
-class ScanBeginSocketSub:
+class StopSocketSub:
     def __init__(self, sub_host, sub_port=None, sub_topic=None):
         self.context = zmq.Context()
 
         self.sub_host = sub_host
         self.sub_port = sub_port
         if self.sub_port is None:
-            self.sub_port = SCAN_BEGIN_PORT
+            self.sub_port = SCAN_END_PORT
 
         self.sub_topic = sub_topic
         if self.sub_topic is None:
-            self.sub_topic = SCAN_BEGIN_TOPIC
+            self.sub_topic = SCAN_END_TOPIC
 
         self.sub_socket = self.context.socket(zmq.SUB)
         self.sub_socket.connect(f"tcp://{self.sub_host}:{self.sub_port}")

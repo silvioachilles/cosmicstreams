@@ -1,6 +1,9 @@
-from cosmicstreams.sockets.DP import DPSocketPub
-from cosmicstreams.sockets.ScanBegin import ScanBeginSocketPub
-from cosmicstreams.sockets.ScanEnd import ScanEndSocketPub
+from cosmicstreams.sockets.frame import FrameSocketPub
+from cosmicstreams.sockets.start import StartSocketPub
+from cosmicstreams.sockets.stop import StopSocketPub
+
+
+PORT = 37013
 
 
 class PreprocessorStream:
@@ -20,24 +23,24 @@ class PreprocessorStream:
         self.port_end = port_end
         self.topic_end = topic_end
 
-        self.socket_scan_begin: ScanBeginSocketPub = None
-        self.socket_dp: DPSocketPub = None
-        self.socket_scan_end: ScanEndSocketPub = None
+        self.socket_scan_begin: StartSocketPub = None
+        self.socket_dp: FrameSocketPub = None
+        self.socket_scan_end: StopSocketPub = None
 
         self.bind_sockets()
 
     def bind_sockets(self):
-        self.socket_scan_begin = ScanBeginSocketPub(
+        self.socket_scan_begin = StartSocketPub(
             self.port_start,
             self.topic_start,
         )
 
-        self.socket_dp = DPSocketPub(
+        self.socket_dp = FrameSocketPub(
             self.port_dp,
             self.topic_dp,
         )
 
-        self.socket_scan_end = ScanEndSocketPub(
+        self.socket_scan_end = StopSocketPub(
             self.port_end,
             self.topic_end,
         )

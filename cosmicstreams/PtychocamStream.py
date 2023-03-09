@@ -1,9 +1,9 @@
 import zmq
 
-from cosmicstreams.sockets.DP import DPSocketSub
-from cosmicstreams.sockets.ScanBegin import ScanBeginSocketSub
-from cosmicstreams.sockets.ScanEnd import ScanEndSocketSub
-from cosmicstreams.sockets.Reco import RecoSocketPub
+from cosmicstreams.sockets.frame import FrameSocketSub
+from cosmicstreams.sockets.start import StartSocketSub
+from cosmicstreams.sockets.stop import StopSocketSub
+from cosmicstreams.sockets.rec import RecSocketPub
 
 
 class PtychocamStream:
@@ -27,19 +27,19 @@ class PtychocamStream:
         if host_end is None:
             host_end = host_start
 
-        self.socket_scan_begin = ScanBeginSocketSub(
+        self.socket_scan_begin = StartSocketSub(
             host_start,
             port_start,
             topic_start,
         )
 
-        self.socket_dp = DPSocketSub(
+        self.socket_dp = FrameSocketSub(
             host_dp,
             port_dp,
             topic_dp,
         )
 
-        self.socket_scan_end = ScanEndSocketSub(
+        self.socket_scan_end = StartSocketSub(
             host_end,
             port_end,
             topic_end,
@@ -47,7 +47,7 @@ class PtychocamStream:
 
         self.use_out = use_out
         if self.use_out:
-            self.socket_reco = RecoSocketPub(
+            self.socket_reco = RecSocketPub(
                 port_out,
                 topic_out,
             )
