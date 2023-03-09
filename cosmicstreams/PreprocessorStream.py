@@ -1,9 +1,6 @@
-from cosmicstreams.sockets.frame import FrameSocketPub
-from cosmicstreams.sockets.start import StartSocketPub
-from cosmicstreams.sockets.stop import StopSocketPub
-
-
-PORT = 37013
+from cosmicstreams.sockets.Frame import FrameSocketPub
+from cosmicstreams.sockets.Start import StartSocketPub
+from cosmicstreams.sockets.Stop import StopSocketPub
 
 
 class PreprocessorStream:
@@ -23,37 +20,39 @@ class PreprocessorStream:
         self.port_end = port_end
         self.topic_end = topic_end
 
-        self.socket_scan_begin: StartSocketPub = None
-        self.socket_dp: FrameSocketPub = None
-        self.socket_scan_end: StopSocketPub = None
+        self.socket_start: StartSocketPub = None
+        self.socket_frame: FrameSocketPub = None
+        self.socket_stop: StopSocketPub = None
 
         self.bind_sockets()
 
     def bind_sockets(self):
-        self.socket_scan_begin = StartSocketPub(
+        self.socket_start = StartSocketPub(
             self.port_start,
             self.topic_start,
         )
 
-        self.socket_dp = FrameSocketPub(
+        self.socket_frame = FrameSocketPub(
             self.port_dp,
             self.topic_dp,
+            self.socket_start.pub_socket,
         )
 
-        self.socket_scan_end = StopSocketPub(
+        self.socket_stop = StopSocketPub(
             self.port_end,
             self.topic_end,
+            self.socket_start.pub_socket,
         )
 
     def close_sockets(self):
-        self.socket_scan_begin.pub_socket.close()
-        self.socket_dp.pub_socket.close()
-        self.socket_scan_end.pub_socket.close()
+        self.socket_start.pub_socket.close()
+        self.socket_frame.pub_socket.close()
+        self.socket_stop.pub_socket.close()
 
-    def send_scan_begin(self, metadata: {}):
-        self.socket_scan_begin.send_metadata(metadata)
+    def send_start(self, metadata: {}):
+        self.socket_start.send_start(metadata)
 
-    def send_dp(
+    def send_frame(
             self,
             identifier,
             data,
@@ -62,7 +61,7 @@ class PreprocessorStream:
             posx,
             metadata=None
     ):
-        self.socket_dp.send_dp(identifier, data, index, posy, posx, metadata)
+        self.socket_frame.send_frame(identifier, data, index, posy, posx, metadata)
 
-    def send_scan_end(self, metadata: dict = dict()):
-        self.socket_scan_end.send_metadata(metadata)
+    def send_stop(self, metadata: dict = dict()):
+        self.socket_stop.send_stop(metadata)

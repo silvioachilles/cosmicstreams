@@ -1,13 +1,5 @@
 import numpy as np
-
-
-KEY_SHAPE_Y = 'shape_y'
-KEY_SHAPE_X = 'shape_x'
-KEY_DTYPE = 'dtype'
-KEY_BYTEORDER = 'byteorder'
-KEY_ORDER = 'order'
-KEY_IDENT = 'ident'
-KEY_INDEX = 'index'
+import cosmicstreams.sockets.Keys as K
 
 
 def get_array_order(array: np.ndarray):
@@ -44,11 +36,11 @@ def get_array_metadata(array: np.ndarray, metadata=None):
         metadata = {}
 
     metadata.update({
-        KEY_SHAPE_Y: array.shape[0],
-        KEY_SHAPE_X: array.shape[1],
-        KEY_DTYPE: array.dtype.name,
-        KEY_BYTEORDER: get_array_byteorder(array),
-        KEY_ORDER: get_array_order(array),
+        K.KEY_SHAPE_Y: array.shape[0],
+        K.KEY_SHAPE_X: array.shape[1],
+        K.KEY_DTYPE: array.dtype.name,
+        K.KEY_BYTEORDER: get_array_byteorder(array),
+        K.KEY_ORDER: get_array_order(array),
     })
 
     return metadata
