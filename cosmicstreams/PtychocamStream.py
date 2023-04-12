@@ -92,9 +92,9 @@ class PtychocamStream:
     def recv_frame(self):
         return self.socket_frame.recv_frame()
 
-    def send_rec(self, rec):
+    def send_rec(self, rec, pixelsize_x=0.0, pixelsize_y=0.0):
         if self.use_out:
-            self.socket_rec.send_rec(rec)
+            self.socket_rec.send_rec(rec, pixelsize_x=pixelsize_x, pixelsize_y=pixelsize_y)
 
     def something_in_queue(self):
         sockets = self.poll()
