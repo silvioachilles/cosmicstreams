@@ -20,3 +20,5 @@ class SocketSub:
 
         self.sub_socket.connect(f"tcp://{self.sub_host}:{self.sub_port}")
         self.sub_socket.setsockopt(zmq.SUBSCRIBE, self.sub_topic)
+
+        print("Listening on {}:{} for topic: {}".format(self.sub_host, self.sub_port, self.sub_topic))
