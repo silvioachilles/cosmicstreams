@@ -5,9 +5,10 @@ class SocketSub:
     DEFAULT_PORT = 38000
     DEFAULT_TOPIC = b'topic'
 
-    def __init__(self, sub_host, sub_port=None, sub_topic=None):
+    def __init__(self, sub_host, sub_port=None, sub_topic=None, hwm=10000):
         self.context = zmq.Context()
         self.sub_socket = self.context.socket(zmq.SUB)
+        self.sub_socket.set_hwm(hwm)
 
         self.sub_host = sub_host
         self.sub_port = sub_port
