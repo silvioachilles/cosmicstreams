@@ -22,8 +22,8 @@ class FrameSocketPub(SocketPub):
 
         metadata[K.KEY_IDENT] = identifier
         metadata[K.KEY_INDEX] = int(index)
-        metadata[K.KEY_POSY] = int(posy)
-        metadata[K.KEY_POSX] = int(posx)
+        metadata[K.KEY_POSY] = posy
+        metadata[K.KEY_POSX] = posx
 
         metadata_zmq = json.dumps(metadata).encode()
 
